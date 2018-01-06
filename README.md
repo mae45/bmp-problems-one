@@ -120,8 +120,11 @@ link
 ** Bugs Fixed : 
 
 Bug 001 : Issues
+
             1. Call functions in WM_CREATE iin the correct order. The LoadPicture functions should be first, then menus and controls.
+           
             2. Format and save the .bmp to a 24-bit format. 
+            
             3. Make sure you are using the right path to the .bmp file. 
   
 ------------------------------------------
