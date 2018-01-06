@@ -1,70 +1,82 @@
-//============================================================================
-// Name        : bmpProblemsOne.cpp
-// Author      : Mae45
-// Version     : V01
-// Description : Git Hub Submission for input 1/2/2018
-//============================================================================
-
 /**
- * The Dimensions of his images was
- * 259 by 259 Yellow and black
- * and
- * 353 by 132 Some pic that works
- * and they were in the same file as his main.cpp
- * file so we will do what he did first creating some
- * images and saving the to the mains folder /.
- */
+    Name    :  bmp-problems-one
+    Author  :  Mae45
+    Version :  Two
+    Comments:  The first edition was pretty messed up and full or errors.
+               It somehow merged two different files or something.
+               This one is the way it was supposed to be in the first place
+    Date    :  1/6/2017
+*/
 
-#include <windows.h> 
-#include <stdlib.h> 
+#include <windows.h>
 
 using namespace std;
 
-// ID's defined to use with Switch and case ta add functionality
-#define FILE_MENU_NEW 1
-#define FILE_MENU_OPEN 2
-#define FILE_MENU_EXIT 3
-#define FILE_MENU_HELP 5
-#define GENERATE_BUTTON 4
+LPCWSTR egClassName = L"myWindowClass";
+
+HWND hLogo;
+HBITMAP hLogoImage, hGenerateImage;
 
 LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 
-void AddMenus(HWND);
-void AddControls(HWND);
-void loadImages();
-
-HMENU hMenu;
-
-HWND hName, hAge, hOut, hLogo;
-
-HBITMAP hLogoImage, hGenerateImage;
+void loadPictures();
+void parentControls(HWND);
+void testPictures();
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdshow )
 {
 
-	
-    WNDCLASSW wc = {0}; 
-	MSG msg {0};
+	HWND hWnd;
 
-	wc.hbrBackground = (HBRUSH) COLOR_WINDOW;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hInstance = hInst;
-	wc.lpszClassName = L"myWindowClass";
-	wc.lpfnWndProc =  WindowProcedure;  
+	WNDCLASSW wc = {0};
 
-	if(!RegisterClassW(&wc)) 
-	{ 
+
+	wc.style 			= 0;
+	wc.lpszMenuName 	= NULL;
+	wc.lpszClassName	= egClassName;
+	wc.lpfnWndProc		= WindowProcedure;
+	wc.hbrBackground	= (HBRUSH)(COLOR_WINDOW + 1);
+	wc.hInstance		= hInst;
+	wc.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
+	wc.hCursor			= LoadCursor(NULL, IDC_ARROW);
+	wc.cbWndExtra		= 0;
+	wc.cbClsExtra		= 0;
+
+
+	if(!RegisterClassW(&wc))
+	{
+		const char Error01[] = "Register Issue To Check On : ";   /// Notice this seems to be the way to add strings through the programming. Can you say ah hah moment
+		const char Error01_Caption[] = "Error 01";
+
+		MessageBoxEx(0, Error01, Error01_Caption, MB_OK | MB_ICONERROR, 0);   /// To stay consistent with the L"" use the W or ExW Prefix on MessageBox or any other functions giving errors abot string type formats
+
 		return -1;
 	}
 
-	CreateWindowExW(0, L"myWindowClass", L"My Window", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 100, 100, 500, 500, NULL, NULL, NULL, NULL);
+	LPCWSTR parentWinTitle = L"My Window";
 
+	hWnd = CreateWindowW(egClassName, parentWinTitle, WS_OVERLAPPEDWINDOW | WS_VISIBLE, 100, 100, 500, 500, NULL, NULL, NULL, NULL);
 
-
-	while( GetMessageW(&msg, 0, 0, 0) ) 
+	if(hWnd == NULL)
 	{
+
+		const wchar_t Error02[] = L"Window Creation Issue To Check On : ";
+		const wchar_t Error02_Caption[] = L"Window Creation Issue To Check On : ";
+		MessageBoxW(0, Error02, Error02_Caption, MB_OK | MB_ICONERROR);
+
+	}
+	ShowWindow(hWnd, ncmdshow);
+	UpdateWindow(hWnd);
+
+
+	MSG msg {0};
+
+	while( GetMessage(&msg, 0, 0, 0) )
+	{
+
 		TranslateMessage(&msg);
-		DispatchMessageW(&msg);
+		DispatchMessage(&msg);
+
 	}
 
 	return 0;
@@ -73,6 +85,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 
 LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
+
 	switch(msg)
 	{
 
@@ -80,88 +93,40 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 		switch(wp)
 		{
 
-		case GENERATE_BUTTON:  
-
-			char name[30], age[10], out[50];
-			GetWindowText(hName, name, 30);
-			GetWindowText(hAge, age, 10);
-
-			strcpy(out, name);
-			strcat(out, " is ");
-			strcat(out, age);
-			strcat(out, " years old.");
-
-			SetWindowText(hOut, out);
-			break;
-		case FILE_MENU_NEW:
-			MessageBeep(MB_ICONINFORMATION);
-			break;
-		case FILE_MENU_OPEN:
-
-			break;
-		case FILE_MENU_EXIT:
-			DestroyWindow(hWnd);
-			break;
 		}
-		break;
+	break;
+	/// In the create you want to call to functions so as to keep your create uncluttered with to much code.
 	case WM_CREATE:
-		loadImages();   
-		AddMenus(hWnd);
-		AddControls(hWnd);   
+
+		parentControls(hWnd);
+		loadPictures();    /// Calling the Images function in Create
+
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+
+
 	default:
 		return DefWindowProcW(hWnd, msg, wp, lp);
+
 	}
 	return 0;
 }
 
-void AddMenus(HWND hWnd)
+
+void parentControls(HWND hWnd)
 {
-	hMenu = CreateMenu();
-	HMENU hFileMenu = CreateMenu();
-	HMENU hSubMenu = CreateMenu();
+    /// Example of params LPCWSTR parentWinTitle = L"My Window";
+    LPCWSTR bmpLogo = L"Static";
 
-	AppendMenu(hSubMenu, MF_STRING, 0, "SubMenu Item");
-
-
-	AppendMenu(hFileMenu, MF_STRING, FILE_MENU_NEW, "New");
-	AppendMenu(hFileMenu, MF_POPUP, (UINT_PTR)hSubMenu, "Open SubMenu");
-	AppendMenu(hFileMenu, MF_STRING, FILE_MENU_EXIT, "Exit");
-	AppendMenu(hFileMenu, MF_SEPARATOR, 0, 0);
-
-	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, "File");
-	AppendMenu(hMenu, MF_STRING, FILE_MENU_HELP, "Help");
-
-	SetMenu(hWnd, hMenu);
-
+    hLogo = CreateWindowW(bmpLogo, NULL, WS_VISIBLE | WS_CHILD | SS_BITMAP, 350, 60, 100, 100, hWnd, NULL, NULL, NULL);
+    SendMessageW(hLogo, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hLogoImage);
 }
 
-
-void AddControls(HWND hWnd)
+void loadPictures()
 {
-
-	CreateWindowExW(0, L"static", L"Name :", WS_VISIBLE | WS_CHILD, 100, 50, 98, 38, hWnd, NULL, NULL, NULL);
-	hName = CreateWindowExW(0, L"Edit", L"", WS_VISIBLE | WS_CHILD | WS_BORDER, 200, 50, 98, 38, hWnd, NULL, NULL, NULL);
-
-	CreateWindowExW(0, L"static", L"Age :", WS_VISIBLE | WS_CHILD, 100, 90, 98, 38, hWnd, NULL, NULL, NULL);
-	hAge = CreateWindowExW(0, L"Edit", L"", WS_VISIBLE | WS_CHILD | WS_BORDER, 200, 90, 98, 38, hWnd, NULL, NULL, NULL);
-
-	CreateWindowExW(0, L"Button", L"Generate",  WS_VISIBLE | WS_CHILD, 150, 140, 98, 38, hWnd, (HMENU)GENERATE_BUTTON, NULL, NULL);
-
-	hOut = CreateWindowExW(0, L"Edit", L"", WS_VISIBLE | WS_CHILD | WS_BORDER, 100, 200, 300, 200, hWnd, NULL, NULL, NULL);
-	hLogo = CreateWindowExW(0, L"static", NULL, WS_VISIBLE | WS_CHILD | SS_BITMAP, 350, 60, 100, 100, hWnd, NULL, NULL, NULL);
-
-	SendMessageW(hLogo, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hLogoImage);
+    LPCWSTR lIbmp = L"C:\\CppCodeblocksProjects\\WorkingWithImagesRetry1\\ball.bmp";
+    hLogoImage = (HBITMAP)LoadImageW(NULL, lIbmp, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 
 }
-
-void loadImages()
-{
-
-	hLogoImage = (HBITMAP)LoadImageW(NULL, L"logoImage.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-}
-
-
