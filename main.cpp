@@ -31,14 +31,14 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 	WNDCLASSW wc = {0};
 
 
-	wc.style 			= 0;
+	wc.style 		= 0;
 	wc.lpszMenuName 	= NULL;
 	wc.lpszClassName	= egClassName;
 	wc.lpfnWndProc		= WindowProcedure;
 	wc.hbrBackground	= (HBRUSH)(COLOR_WINDOW + 1);
 	wc.hInstance		= hInst;
-	wc.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor			= LoadCursor(NULL, IDC_ARROW);
+	wc.hIcon		= LoadIcon(NULL, IDI_APPLICATION);
+	wc.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wc.cbWndExtra		= 0;
 	wc.cbClsExtra		= 0;
 
