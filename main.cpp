@@ -125,7 +125,7 @@ void parentControls(HWND hWnd)
 
     LPCWSTR bmpLogo = L"Static";
 
-    hLogo = CreateWindowW(bmpLogo, NULL, WS_VISIBLE | WS_CHILD | SS_BITMAP, 350, 60, 100, 100, hWnd, NULL, NULL, NULL);
+    hLogo = CreateWindowW(bmpLogo, NULL, WS_VISIBLE | WS_CHILD | SS_BITMAP, 100, 70, 100, 100, hWnd, NULL, NULL, NULL);
     SendMessageW(hLogo, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hLogoImage);
     /// Here you are sending the message. This function and any menus should be called after load picture.
 }
