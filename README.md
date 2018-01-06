@@ -116,4 +116,16 @@ Win 32 GUI c++ .bmp The image is not showing.
 link
 
 <p>A <a href="https://stackoverflow.com/questions/48129169/win-32-gui-c-bmp-the-image-is-not-showing">StackOverflow Submission</a>.</p>
+
+** Bugs Fixed : 
+
+Bug 001 : Issues
+
+            1. Call functions in WM_CREATE iin the correct order. The LoadPicture functions should be first, then menus and controls.
+           
+            2. Format and save the .bmp to a 24-bit format. 
+            
+            3. Make sure you are using the right path to the .bmp file. 
+  
 ------------------------------------------
+

@@ -99,7 +99,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 	break;
 
 	case WM_CREATE:                 /// Order of functions correction per Barmak Shemirani
-        loadPictures();             /// Here it is very important to call loadPictures() first.
+        	loadPictures();             /// Here it is very important to call loadPictures() first.
 		parentControls(hWnd);
 		break;
 	case WM_DESTROY:
