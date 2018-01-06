@@ -1,3 +1,4 @@
+
 /**
     Name    :  bmp-problems-one
     Author  :  Mae45
@@ -31,14 +32,14 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 	WNDCLASSW wc = {0};
 
 
-	wc.style 		= 0;
+	wc.style 			= 0;
 	wc.lpszMenuName 	= NULL;
 	wc.lpszClassName	= egClassName;
 	wc.lpfnWndProc		= WindowProcedure;
 	wc.hbrBackground	= (HBRUSH)(COLOR_WINDOW + 1);
 	wc.hInstance		= hInst;
-	wc.hIcon		= LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor		= LoadCursor(NULL, IDC_ARROW);
+	wc.hIcon			= LoadIcon(NULL, IDI_APPLICATION);
+	wc.hCursor			= LoadCursor(NULL, IDC_ARROW);
 	wc.cbWndExtra		= 0;
 	wc.cbClsExtra		= 0;
 
@@ -50,7 +51,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 
 		MessageBoxEx(0, Error01, Error01_Caption, MB_OK | MB_ICONERROR, 0);   /// To stay consistent with the L"" use the W or ExW Prefix on MessageBox or any other functions giving errors abot string type formats
 
-		return -1;
+		// return -1;
+		///   per David Heffernan : You don't check return values for errors
 	}
 
 	LPCWSTR parentWinTitle = L"My Window";
@@ -95,17 +97,14 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 		}
 	break;
-	/// In the create you want to call to functions so as to keep your create uncluttered with to much code.
-	case WM_CREATE:
 
+	case WM_CREATE:                 /// Order of functions correction per Barmak Shemirani
+        loadPictures();             /// Here it is very important to call loadPictures() first.
 		parentControls(hWnd);
-		loadPictures();    /// Calling the Images function in Create
-
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-
 
 	default:
 		return DefWindowProcW(hWnd, msg, wp, lp);
@@ -114,19 +113,21 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 	return 0;
 }
 
+void loadPictures()
+{
+    LPCWSTR lIbmp = L"logoImage.bmp";   /// adjust your folder. Works better with full path
+    hLogoImage = (HBITMAP)LoadImageW(NULL, lIbmp, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+
+}
 
 void parentControls(HWND hWnd)
 {
-    /// Example of params LPCWSTR parentWinTitle = L"My Window";
+
     LPCWSTR bmpLogo = L"Static";
 
     hLogo = CreateWindowW(bmpLogo, NULL, WS_VISIBLE | WS_CHILD | SS_BITMAP, 350, 60, 100, 100, hWnd, NULL, NULL, NULL);
     SendMessageW(hLogo, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hLogoImage);
+    /// Here you are sending the message. This function and any menus should be called after load picture.
 }
 
-void loadPictures()
-{
-    LPCWSTR lIbmp = L"C:\\CppCodeblocksProjects\\WorkingWithImagesRetry1\\ball.bmp";
-    hLogoImage = (HBITMAP)LoadImageW(NULL, lIbmp, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-
-}
+/// Bitmap pic should be saved to 24-bit format
